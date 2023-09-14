@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Quittance de loyer</title>
+    <style>
+        /* Add your custom CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 1300px;
+        }
+        .header {
+            padding: 20px 5px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        h1 {
+            margin: 0;
+            margin-top: 80px;
+            margin-bottom: 10px;
+            font-size: 48px; /* Increased title size */
+            text-align: center; /* Centered title */
+        }
+        h3 {
+            margin: 0;
+            margin-bottom: 60px;
+            font-size: 24px; /* Increased title size */
+            text-align: center; /* Centered title */
+        }
+        .header img {
+            max-width: 150px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        table {
+            border-collapse: separate;
+            border-spacing: 15px;
+        }
+        .company-info {
+            text-align: right;
+            margin-top: 5px;
+        }
+        .company-info p {
+            margin: 5px 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0;
+            padding: 20px;
+        }
+        tr {
+            height: 50px;
+        }
+        td {
+            border: 1px solid #ccc;
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            padding: 15px;
+            text-align: left;
+            background-color: #FF8A65;
+            color: white;
+        }
+        /* Style table rows without <td> content */
+        tr:not(:has(td)) {
+            display: block;
+        }
+        .info-table {
+            width: 100%;
+        }
+        /* Horizontal alignment for payment paragraph and table using inline-block */
+        .payment-table {
+            width: 60%;
+            display: inline-block;
+            float: right;
+        }
+        .payment-table th {
+            width: 100%;
+        }
+        .payment {
+            clear: both;
+        }
+        .information {
+            margin-bottom: 30px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 95%;
+            background-color: #f2f2f2;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        .message {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="data:image/png;base64,{{ logo_base64 }}" alt="Company Logo">
+        <div class="company-info">
+            <p>Chella Dior, SCI</p>
+            <p>SIRET : 234235</p>
+            <p>12 Rue Salvador Allende, 92000 Nanterre</p>
+            <p>Email: chella.dior.sci@gmail.com</p>
+            <p>Téléphone: 0695702600</p>
+        </div>
+    </div>
+    <div class="container">
+        <h1>Quittance de loyer</h1>
+        <h3>Loyer de {{month}}</h3>
+        <div class="information">
+            <table class="info-table">
+                <tr>
+                    <th colspan="2">Période du {{period_start.strftime('%d/%m/%Y')}} au {{period_end.strftime('%d/%m/%Y')}}</th> <!-- Centered and spans two columns -->
+                </tr>
+                <tr>
+                    <th>Type de location</th>
+                    <td>{{ contract.get_type_display() }}</td>
+                </tr>
+                <tr>
+                    <th>Locataire</th>
+                    <td>{{contract.tenant.last_name}} {{contract.tenant.first_name}}</td>
+                </tr>
+                <tr>
+                    <th>Adresse du logement</th>
+                    <td>{{ contract.apartment.full_address }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="payment">
+            <table class="payment-table">
+                <tr>
+                    <th colspan="2">Détail du règlement</th>
+                </tr>
+                <tr>
+                    <th>Loyer mensuel</th>
+                    <td>{{contract.rent}}</td>
+                </tr>
+                <tr>
+                    <th>Charges</th>
+                    <td>{{contract.charges}}</td>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <td>{{contract.rent + contract.charges}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="message">
+        <p class="message">Payée par virement le {{payment_date.strftime('%d/%m/%Y')}} </p>
+    </div>
+    <div class="footer">
+        <p>
+            Cette quittance annule tous les reçus qui auraient pu être donné pour accomptes versés au titre du loyer et des charges de la période indiquée.
+            Le paiement de la présente quittance ne présume pas du paiement des termes précédents. A conserver 3 ans après échéance du bail.
+        </p>
+    </div>
+</body>
+</html>
