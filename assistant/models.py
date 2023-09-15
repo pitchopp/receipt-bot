@@ -39,7 +39,7 @@ class Contract(models.Model):
     charges = models.DecimalField(max_digits=10, decimal_places=2)
     deposit = models.DecimalField(max_digits=10, decimal_places=2)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    apartment = models.OneToOneField(Apartment, on_delete=models.CASCADE)
+    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE)
     tenant = models.OneToOneField(Tenant, on_delete=models.CASCADE)
     
     def __str__(self) -> str:

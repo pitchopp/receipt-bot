@@ -4,13 +4,16 @@ from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE
 from email import encoders
-from settings import Settings
+from .settings import Settings
+from datetime import date
+from assistant.models import Tenant
 
-def send_receipt(recipient: str, pdf_file: str, settings: Settings = Settings()):
+def send_receipt(tenant: Tenant, month: date, pdf_file: str, settings: Settings = Settings()):
     # Define the email subject and body
-    subject = 'Quittance de loyer'
-    body = 'Please find attached the PDF file.'
-
+    subject = 'Quittance de loyer ' + month.strftime("%B %Y")
+    body = 'Bonjour ' + tenant.first_name + ',\n\nVeuillez trouver ci-joint la quittance de loyer pour le mois de ' + month.strftime("%B %Y") + '.\n\nCordialement,\n\nChella Dior'
+    recipient = tenant.email_address
+    
     # Create a multipart message object and set the headers
     msg = MIMEMultipart()
     msg['From'] = settings.sender_email

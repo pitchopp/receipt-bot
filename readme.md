@@ -16,3 +16,5 @@ brew install wkhtmltoimage
 
 
 don't forget to add wkhtmltopdf to your PATH if needed
+
+pip install -r requirements.txt

@@ -82,7 +82,11 @@
             float: right;
         }
         .payment-table th {
-            width: 100%;
+            width: 300px;
+        }
+        .payment-table td {
+            width: 100px;
+            text-align: right;
         }
         .payment {
             clear: both;
@@ -113,10 +117,10 @@
         <img src="data:image/png;base64,{{ logo_base64 }}" alt="Company Logo">
         <div class="company-info">
             <p>Chella Dior, SCI</p>
-            <p>SIRET : 234235</p>
+            <p>SIRET : 90813011500011</p>
             <p>12 Rue Salvador Allende, 92000 Nanterre</p>
-            <p>Email: chella.dior.sci@gmail.com</p>
-            <p>Téléphone: 0695702600</p>
+            <p>chella.dior.sci@gmail.com</p>
+            <p>+33 6 95 70 26 00</p>
         </div>
     </div>
     <div class="container">
@@ -148,21 +152,21 @@
                 </tr>
                 <tr>
                     <th>Loyer mensuel</th>
-                    <td>{{contract.rent}}</td>
+                    <td>{{contract.rent}} €</td>
                 </tr>
                 <tr>
                     <th>Charges</th>
-                    <td>{{contract.charges}}</td>
+                    <td>{{contract.charges}} €</td>
                 </tr>
                 <tr>
                     <th>Total</th>
-                    <td>{{contract.rent + contract.charges}}</td>
+                    <td>{{contract.rent + contract.charges}} €</td>
                 </tr>
             </table>
         </div>
     </div>
     <div class="message">
-        <p class="message">Payée par virement le {{payment_date.strftime('%d/%m/%Y')}} </p>
+        <p class="message">Payé par virement le {{payment_date.strftime('%d/%m/%Y')}} </p>
     </div>
     <div class="footer">
         <p>

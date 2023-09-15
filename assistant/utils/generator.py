@@ -46,4 +46,6 @@ def generate_receipt(contract: Contract, payment_date: date, month: date):
 
     # Render the template with the variables replaced by their values
     output = template.render(variables)
-    pdfkit.from_string(output, 'output/output.pdf', options={"enable-local-file-access": ""})
+    filename = f"quittance_{contract.tenant.first_name}_{contract.tenant.last_name}_{month:%B %Y}.pdf"
+    pdfkit.from_string(output, f'output/{filename}', options={"enable-local-file-access": ""})
+    return f'output/{filename}'
