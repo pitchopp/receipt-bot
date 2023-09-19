@@ -1,7 +1,7 @@
 import base64
 import pdfkit
 from jinja2 import Environment, FileSystemLoader
-from assistant.models import Contract
+from assistant import models
 from datetime import date
 import locale
 from dateutil.relativedelta import relativedelta
@@ -15,7 +15,7 @@ def get_image_file_as_base64_data():
         return base64.b64encode(image_file.read()).decode('utf-8')
 
 
-def generate_receipt(contract: Contract, payment_date: date, month: date):
+def generate_receipt(contract: models.Contract, payment_date: date, month: date):
     
     period_start = month.replace(day=1)
     period_end = month.replace(day=1) + relativedelta(months=1, days=-1)

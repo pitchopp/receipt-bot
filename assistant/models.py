@@ -1,4 +1,6 @@
 from django.db import models
+from .utils.smtp import send_receipt
+from .utils.generator import generate_receipt
 
 
 class Apartment(models.Model):
@@ -44,3 +46,19 @@ class Contract(models.Model):
     
     def __str__(self) -> str:
         return f"{self.apartment} - {self.tenant}"
+
+
+class Receipt(models.Model):
+    generation_date = models.DateField()
+    month = models.DateField()
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
+    document = models.FileField(upload_to='receipts/')
+    sending_date = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self) -> str:
+        return f"{self.contract} - {self.date}"
+    
+    def send(self):
+        quittance = generate_receipt(contract=self, payment_date=self.date, month=self.month)
+        # send quittance by mail
+        send_receipt(self.tenant, self.month, quittance)
