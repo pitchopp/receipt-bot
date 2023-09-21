@@ -152,15 +152,15 @@
                 </tr>
                 <tr>
                     <th>Loyer mensuel</th>
-                    <td>{{contract.rent}} €</td>
+                    <td>{{(contract.rent * coef) | round(2)}} €</td>
                 </tr>
                 <tr>
                     <th>Charges</th>
-                    <td>{{contract.charges}} €</td>
+                    <td>{{(contract.charges * coef) | round(2)}} €</td>
                 </tr>
                 <tr>
                     <th>Total</th>
-                    <td>{{contract.rent + contract.charges}} €</td>
+                    <td>{{(coef * (contract.rent + contract.charges)) | round(2)}} €</td>
                 </tr>
             </table>
         </div>

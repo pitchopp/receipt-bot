@@ -10,7 +10,7 @@ from assistant.utils.smtp import send_receipt
 
 if __name__ == "__main__":
     # contract = Contract.objects.filter(tenant__first_name='Jules').first()
-    contract = Contract.objects.filter(tenant__first_name='Steven').first()
-    quittance = generate_receipt(contract=contract, payment_date=date(2023, 9, 5), month=date(2023, 9, 1))
+    contract = Contract.objects.filter(tenant__first_name__icontains='iranda').first()
+    quittance = generate_receipt(contract=contract, payment_date=date(2023, 9, 20), month=date(2023, 9, 1), period_start=date(2023, 9, 17))
     # send quittance by mail
     # send_receipt(contract.tenant, date(2023, 9, 1), quittance)
