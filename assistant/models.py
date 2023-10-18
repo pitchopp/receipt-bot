@@ -1,6 +1,6 @@
 from django.db import models
-from .utils.smtp import send_receipt
-from .utils.generator import generate_receipt
+# from .utils.smtp import send_receipt
+# from .utils.generator import generate_receipt
 
 
 class Apartment(models.Model):
@@ -25,6 +25,7 @@ class Tenant(models.Model):
     last_name = models.CharField(max_length=255)
     email_address = models.EmailField()
     phone = models.CharField(max_length=20)
+    iban = models.CharField(max_length=34, null=True, blank=True)
     
     def __str__(self):
         return self.first_name + ' ' + self.last_name
@@ -43,22 +44,51 @@ class Contract(models.Model):
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE)
     tenant = models.OneToOneField(Tenant, on_delete=models.CASCADE)
+    tenant_iban = models.CharField(max_length=34, null=True, blank=True)
+    
+    
+    @property
+    def amount(self):
+        return self.rent + self.charges
     
     def __str__(self) -> str:
         return f"{self.apartment} - {self.tenant}"
 
-
-class Receipt(models.Model):
-    generation_date = models.DateField()
-    month = models.DateField()
+class Payment(models.Model):
+    id = models.CharField(max_length=255, null=True, blank=True)
+    bank_id = models.CharField(max_length=255, primary_key=True)
+    date = models.DateField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
-    document = models.FileField(upload_to='receipts/')
-    sending_date = models.DateTimeField(null=True, blank=True)
     
     def __str__(self) -> str:
         return f"{self.contract} - {self.date}"
+
+class Receipt(models.Model):
+    generation_date = models.DateField(auto_now_add=True)
+    month = models.DateField()
+    period_start = models.DateField()
+    period_end = models.DateField()
+    document = models.FileField(upload_to='receipts')
+    payment = models.OneToOneField('Payment', on_delete=models.SET_NULL, null=True, blank=True)
+    source_task = models.ForeignKey('Task', on_delete=models.SET_NULL, null=True, blank=True)
     
-    def send(self):
-        quittance = generate_receipt(contract=self, payment_date=self.date, month=self.month)
-        # send quittance by mail
-        send_receipt(self.tenant, self.month, quittance)
+    def __str__(self) -> str:
+        return f"{self.payment}"
+
+class Task(models.Model):
+    name = models.CharField(max_length=255)
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=10, choices=[
+        ('running', 'Running'),
+        ('success', 'Success'),
+        ('error', 'Error'),
+    ], default='running')
+    error = models.TextField(null=True, blank=True)
+    traceback = models.TextField(null=True, blank=True)
+    
+    
+    def __str__(self) -> str:
+        return f"{self.name} - {self.start_date}"
+    

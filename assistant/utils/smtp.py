@@ -5,12 +5,14 @@ from email.mime.text import MIMEText
 from email.utils import COMMASPACE
 from email import encoders
 from .settings import Settings
-from datetime import date
-from assistant.models import Tenant
+from assistant.models import Receipt
 
 
-def send_receipt(tenant: Tenant, month: date, pdf_file: str, settings: Settings = Settings()):
+def send_receipt(receipt: Receipt, settings: Settings = Settings()):
     # Define the email subject and body
+    month = receipt.month
+    tenant = receipt.payment.contract.tenant
+    pdf_file = receipt.document.path
     subject = 'Quittance de loyer ' + month.strftime("%B %Y")
     body = 'Bonjour ' + tenant.first_name + ',\n\nVeuillez trouver ci-joint la quittance de loyer pour le mois de ' + month.strftime("%B %Y") + '.\n\nCordialement,\n\nChella Dior'
     recipient = tenant.email_address
@@ -38,9 +40,3 @@ def send_receipt(tenant: Tenant, month: date, pdf_file: str, settings: Settings 
         smtp.starttls()
         smtp.login(settings.smtp_username, settings.smtp_password)
         smtp.sendmail(settings.sender_email, recipient, msg.as_string())
-
-
-if __name__ == "__main__":
-    recipient = 'sghir.ma@gmail.com'
-    pdf_file = 'output/output.pdf'
-    send_receipt(recipient, pdf_file)

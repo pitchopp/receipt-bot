@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     smtp_username: str
     smtp_password: str
     sender_email: str = ""
+    qonto_client_id: str
+    qonto_secret_key: str
+    qonto_iban: str
     
     @field_validator("sender_email")
     def get_address(cls, sender_email: str, info: FieldValidationInfo) -> str:

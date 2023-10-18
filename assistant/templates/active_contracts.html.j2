@@ -1,0 +1,26 @@
+{% block content %}
+    <h1>Active Contracts</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tenant</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Rent</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contract in contracts %}
+                <tr>
+                    <td>{{ contract.id }}</td>
+                    <td>{{ contract.tenant }}</td>
+                    <td>{{ contract.start_date }}</td>
+                    <td>{{ contract.end_date }}</td>
+                    <td>{{ contract.rent + contract.charges }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
