@@ -52,16 +52,18 @@ def main(task: Task):
     # First we retrieve the incomes
     incomes = get_incomes()
     for income in tqdm(sorted(incomes, key=lambda x: x.settled_at), desc='incomes'):
+        # verify that the income is not already in the database
+        if Payment.objects.filter(transaction_id=income.id, bank=income.bank).exists():
+            # print(f"{income.id} already exists")
+            continue
         # try to find a contract with the same iban
-        
         try:
             contract = identify_contract(income)
         except ContractException as e:
-            print(str(e))
+            print(income.id, str(e))
             continue
         
         amount, period_start, period_end = calculate_expected_echeance(contract)
-        print(amount, period_start, period_end)
         # verify that the amount is correct
         if income.amount != amount:
             print(f"wrong amount for {income.from_iban}")
@@ -77,21 +79,25 @@ def main(task: Task):
             period_end=period_end
         )
         payment = Payment.objects.create(
-            bank_id=income.id,
+            transaction_id=income.id,
+            bank='qonto',
             date=income.settled_at,
             amount=income.amount,
-            contract=contract
+            contract=contract,
+            is_rent=True
         )
         receipt = Receipt.objects.create(
-            month=income.settled_at,
+            month=period_start.replace(day=1),
             period_start=period_start,
             period_end=period_end,
             payment=payment,
             document=quittance,
-            source_task=task
+            source_task=task,
+            contract=contract
         )
         # send quittance by mail
         send_receipt(receipt)
+        save_drive(receipt)
         
 
 

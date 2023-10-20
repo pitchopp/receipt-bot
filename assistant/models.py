@@ -55,11 +55,14 @@ class Contract(models.Model):
         return f"{self.apartment} - {self.tenant}"
 
 class Payment(models.Model):
-    id = models.CharField(max_length=255, null=True, blank=True)
-    bank_id = models.CharField(max_length=255, primary_key=True)
+    transaction_id = models.CharField(max_length=255)
+    bank = models.CharField(max_length=50, choices=[
+        ('qonto', 'Qonto'),
+    ])
     date = models.DateField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE, null=True, blank=True)
+    is_rent = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return f"{self.contract} - {self.date}"
@@ -72,9 +75,10 @@ class Receipt(models.Model):
     document = models.FileField(upload_to='receipts')
     payment = models.OneToOneField('Payment', on_delete=models.SET_NULL, null=True, blank=True)
     source_task = models.ForeignKey('Task', on_delete=models.SET_NULL, null=True, blank=True)
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
     
     def __str__(self) -> str:
-        return f"{self.payment}"
+        return f"{self.contract} - {self.month}"
 
 class Task(models.Model):
     name = models.CharField(max_length=255)
