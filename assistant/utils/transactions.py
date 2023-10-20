@@ -9,6 +9,7 @@ api = QontoApi()
 class Income(BaseModel):
     """positive transaction model"""
     id: str
+    bank: str
     amount: int
     currency: str
     settled_at: datetime
@@ -25,6 +26,7 @@ class Income(BaseModel):
         assert transaction['income']['counterparty_account_number_format'] == 'IBAN'
         return cls(
             id=transaction['id'],
+            bank='qonto',
             amount=transaction['amount'],
             currency=transaction['currency'],
             settled_at=transaction['settled_at'],
@@ -50,8 +52,3 @@ def get_incomes(start_date: datetime = None, end_date: datetime = None):
     incomes = api.get_transactions(**params)['transactions']
     incomes = [i for i in incomes if i['subject_type'] == 'Income' and 'income' in i]
     return Income.from_transactions(incomes)
-    
-
-
-if __name__ == '__main__':
-    print('hello world')
